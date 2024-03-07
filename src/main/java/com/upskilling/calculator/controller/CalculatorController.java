@@ -1,20 +1,24 @@
 package com.upskilling.calculator.controller;
 
 import com.upskilling.calculator.Dto.CalculationRequestDto;
-import com.upskilling.calculator.service.interfaces.CalculatorServiceInterface;
-import com.upskilling.calculator.service.interfaces.MemoryServiceInterface;
+import com.upskilling.calculator.service.CalculatorService;
+import com.upskilling.calculator.service.MemoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("calculator")
 public class CalculatorController {
-    private final CalculatorServiceInterface calculatorService;
-    private final MemoryServiceInterface memoryService;
+    private final CalculatorService calculatorService;
+    private final MemoryService memoryService;
     
-    @PostMapping( "calculator/add" )
+    /**
+     * Endpoint to perform addition operation
+     * @param request;
+     * @return result for the summation operation of type double
+     */
+    @PostMapping( "add" )
     public double add (@RequestBody CalculationRequestDto request) {
         try {
             if( request.getNumbers().size() < 2 ) {
@@ -26,7 +30,12 @@ public class CalculatorController {
         }
     }
     
-    @PostMapping( "calculator/subtract" )
+    /**
+     * Endpoint to perform subtraction operation
+     * @param request;
+     * @return result for the subtraction operation of type double
+     */
+    @PostMapping( "subtract" )
     public double subtract (@RequestBody CalculationRequestDto request) {
         try {
             if( request.getNumbers().size() < 2 ) {
@@ -38,7 +47,12 @@ public class CalculatorController {
         }
     }
     
-    @PostMapping( "calculator/multiply" )
+    /**
+     * Endpoint to perform multiplication operation
+     * @param request;
+     * @return result for the multiplication operation of type double
+     */
+    @PostMapping( "multiply" )
     public double multiply (@RequestBody CalculationRequestDto request) {
         try {
             if( request.getNumbers().size() < 2 ) {
@@ -50,18 +64,28 @@ public class CalculatorController {
         }
     }
     
-    @PostMapping( "calculator/divide" )
+    /**
+     * Endpoint to perform division operation
+     * @param request;
+     * @return result for the division operation of type double
+     */
+    @PostMapping( "divide" )
     public double divide (@RequestBody CalculationRequestDto request) {
         try {
             if( request.getNumbers().size() < 2 )
                 throw new IllegalArgumentException( "Please provide at least two numbers" );
-            return calculatorService.divide( request.getNumbers().get( 0 ), request.getNumbers().get( 1 ) );
+            return calculatorService.divide( request.getNumbers() );
         } catch(IllegalArgumentException e) {
             throw new IllegalArgumentException( e.getMessage() );
         }
     }
     
-    @PostMapping("calculator/memory/add")
+    /**
+     * Endpoint to add a value to memory
+     * @param value;
+     * @return value added to memory message
+     */
+    @PostMapping("memory/add")
     public String addToMemory(@RequestBody double value) {
         try{
             memoryService.addToMemory(value);
@@ -71,7 +95,12 @@ public class CalculatorController {
         }
     }
     
-    @PostMapping("calculator/memory/subtract")
+    /**
+     * Endpoint to subtract a value from memory
+     * @param value;
+     * @return value subtracted from memory message
+     */
+    @PostMapping("memory/subtract")
     public String subtractFromMemory(@RequestBody double value) {
         try{
             double memory = memoryService.recallMemory();
@@ -85,13 +114,21 @@ public class CalculatorController {
         }
     }
     
-    @PostMapping( "calculator/memory/clear" )
+    /**
+     * Endpoint to clear memory
+     * @return memory cleared message
+     */
+    @PostMapping( "memory/clear" )
     public String clearMemory() {
         memoryService.clearMemory();
         return "Cleared memory";
     }
     
-    @PostMapping("calculator/memory/recall")
+    /**
+     * Endpoint to recall memory
+     * @return value in memory
+     */
+    @GetMapping("memory/recall")
     public double recallMemory() {
         return memoryService.recallMemory();
     }

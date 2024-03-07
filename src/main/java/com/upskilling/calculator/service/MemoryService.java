@@ -1,25 +1,35 @@
-package com.upskilling.calculator.service.impl;
+package com.upskilling.calculator.service;
 
 
-import com.upskilling.calculator.service.interfaces.MemoryServiceInterface;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemoryServiceImpl implements MemoryServiceInterface {
+public class MemoryService  {
     private double memory = 0.0;
     
-    @Override
+    /**
+     * Add value to memory
+     * @param value;
+     */
     public synchronized void addToMemory(double value) {memory += value;}
     
-    @Override
+    /**
+     * Subtract value from memory
+     * @param value;
+     */
     public void subtractFromMemory(double value) {memory -= value;}
     
-    @Override
+    /**
+     * Recall memory
+     * @return memory;
+     */
     public double recallMemory() {
         return memory;
     }
     
-    @Override
+    /**
+     * Clear memory
+     */
     public void clearMemory() {
         memory = 0;
     }
