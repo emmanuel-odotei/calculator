@@ -1,13 +1,9 @@
 pipeline {
     agent any
 
-    tools {
-            maven 'maven3'
-    }
-
     environment {
-            DOCKER_IMAGE = "niicloud/mycalculatorapp"
-            DOCKER_TAG = "1.0.0"
+            DOCKER_IMAGE = "niicloud/calculator"
+            DOCKER_TAG = "latest"
     }
 
     triggers {
@@ -15,6 +11,18 @@ pipeline {
     }
 
     stages {
+        stage('Maven Install') {
+            agent {
+                docker  {
+                    image 'maven:3.9.6-sapmachine-17'
+                }
+            }
+
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
         stage('Git Checkout') {
             steps {
                 git branch: 'main', changelog: false, url: 'https://github.com/emmanuel-odotei/calculator.git'
@@ -29,22 +37,22 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-                    }
-                }
-            }
-        }
+//         stage('Push Docker Image') {
+//             steps {
+//                 script {
+//                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+//                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+//                     }
+//                 }
+//             }
+//         }
 
-        stage('Clean Up') {
-            steps {
-                script {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
-                }
-            }
-        }
+//         stage('Clean Up') {
+//             steps {
+//                 script {
+//                     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
+//                 }
+//             }
+//         }
     }
 }
