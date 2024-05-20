@@ -10,21 +10,15 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 git branch: 'main', changelog: false, url: 'https://github.com/emmanuel-odotei/calculator.git'
-            }
-        }
 
-        stage('Build Application') {
-            steps {
                 sh 'mvn clean install'
             }
         }
-
         stage('Build Docker Image') {
             steps {
                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
             }
         }
-
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
@@ -38,7 +32,6 @@ pipeline {
                 }
             }
         }
-
         stage('Clean Up') {
             steps {
                 script {
