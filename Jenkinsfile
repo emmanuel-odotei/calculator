@@ -2,12 +2,8 @@ pipeline {
     agent any
 
     environment {
-            DOCKER_IMAGE = "niicloud/calculator"
-            DOCKER_TAG = "latest"
-    }
-
-    triggers {
-            pollSCM('*/5 * * * *')
+        DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'
+        DOCKER_IMAGE_NAME = 'niicloud/calculator'
     }
 
     stages {
@@ -17,22 +13,28 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Application') {
             steps {
-                script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} . " // Build the Docker image for your application
-                }
+                sh 'mvn clean install'
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Build Docker Image') {
+            steps {
+               sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-credentials', passwordVariable:
-                    'docker-credentialsPassword', usernameVariable: 'docker-credentialsUser')]) {
-                              sh "docker login -u ${env.docker-credentialsUser} -p ${env.docker-credentialsPassword}"
-                              sh 'docker push niicloud/calculator:latest'
+                     // Login to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                        sh "docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD"
                     }
+
+                    // Push the Docker image to Docker Hub
+                    sh "docker push $DOCKER_IMAGE_NAME"
                 }
             }
         }
