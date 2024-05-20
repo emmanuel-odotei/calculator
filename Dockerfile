@@ -8,4 +8,4 @@ COPY . /app
 
 RUN ./mvnw clean package
 
-CMD ["java", "-jar", "mycalculatorapp 1.0.0.jar"]
+CMD ["java", "-jar", "target/calculator-1.0.0.jar"]
