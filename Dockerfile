@@ -1,5 +1,11 @@
 FROM openjdk:17-alpine
-ENV PORT 8080
-EXPOSE 8080
-COPY target/calculator-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+WORKDIR /app
+
+EXPOSE 8081
+
+COPY . /app
+
+RUN ./mvnw clean package
+
+CMD ["java", "-jar", "mycalculatorapp 1.0.0.jar"]
