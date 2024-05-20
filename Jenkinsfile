@@ -11,14 +11,6 @@ pipeline {
     }
 
     stages {
-        stage('Maven Install') {
-            agent {
-                docker  {
-                    image 'maven:3.9.6-sapmachine-17'
-                }
-            }
-        }
-
         stage('Git Checkout') {
             steps {
                 git branch: 'main', changelog: false, url: 'https://github.com/emmanuel-odotei/calculator.git'
@@ -33,22 +25,23 @@ pipeline {
             }
         }
 
-//         stage('Push Docker Image') {
-//             steps {
-//                 script {
-//                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-//                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
-//                     }
-//                 }
-//             }
-//         }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-credentials', passwordVariable:
+                    'docker-credentialsPassword', usernameVariable: 'docker-credentialsUser')]) {
+                              sh "docker login -u ${env.docker-credentialsUser} -p ${env.docker-credentialsPassword}"
+                              sh 'docker push niicloud/calculator:latest'
+                }
+            }
+        }
 
-//         stage('Clean Up') {
-//             steps {
-//                 script {
-//                     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
-//                 }
-//             }
-//         }
+        stage('Clean Up') {
+            steps {
+                script {
+                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
+                }
+            }
+        }
     }
 }
