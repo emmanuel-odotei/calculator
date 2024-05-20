@@ -32,6 +32,7 @@ pipeline {
                     'docker-credentialsPassword', usernameVariable: 'docker-credentialsUser')]) {
                               sh "docker login -u ${env.docker-credentialsUser} -p ${env.docker-credentialsPassword}"
                               sh 'docker push niicloud/calculator:latest'
+                    }
                 }
             }
         }
