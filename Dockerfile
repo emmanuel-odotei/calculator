@@ -6,6 +6,6 @@ EXPOSE 8081
 
 COPY . /app
 
-RUN ./mvnw clean package
+RUN ./mvn clean package
 
 CMD ["java", "-jar", "app/target/calculator-1.0.0.jar"]
