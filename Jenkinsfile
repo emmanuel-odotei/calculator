@@ -33,12 +33,12 @@ pipeline {
                 }
             }
         }
-        stage('Clean Up') {
-            steps {
-                script {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
-                }
-            }
-        }
+//         stage('Clean Up') {
+//             steps {
+//                 script {
+//                     docker.image("niicloud/calculator:latest").remove()
+//                 }
+//             }
+//         }
     }
 }
