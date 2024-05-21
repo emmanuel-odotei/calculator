@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("calculator")
+@RequestMapping("/")
 public class CalculatorController {
     private final CalculatorService calculatorService;
     private final MemoryService memoryService;
