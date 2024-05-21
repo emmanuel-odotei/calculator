@@ -6,12 +6,14 @@ pipeline {
         DOCKER_IMAGE_NAME = 'niicloud/calculator'
     }
 
+    tools {
+        maven 'maven_3'
+    }
+
     stages {
         stage('Git Checkout') {
             steps {
                 git branch: 'main', changelog: false, url: 'https://github.com/emmanuel-odotei/calculator.git'
-
-                sh 'mvn clean install'
             }
         }
         stage('Build Docker Image') {
